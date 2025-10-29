@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+  const [inputValue, setInputValue] = useState('');
+  const [todos, setTodos] = useState([]);
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  }
+
+   // Todo ekleme fonksiyonu
+  const addTodo = () => {
+    if (inputValue.trim() !== '') {
+      const newTodo = {
+        id: Date.now(), // Basit bir ID
+        text: inputValue,
+        completed: false
+      }
+      setTodos([...todos, newTodo]) // Mevcut listeye yeni todo ekle
+      setInputValue('') // Input'u temizle
+    }
+  }
+
+  // Enter tuşuna basınca da eklensin
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      addTodo()
+    }
+  }
+
+  return ( 
+    <div className="app">
+      <h1>Yapılcaklar Listesi </h1>
+
+      <div className='input-container'>
+        <input 
+          type= "text"
+          placeholder="Yeni görev ekle..."
+          value={inputValue}
+          onChange={handleInputChange}  
+          onKeyUp={handleKeyPress}
+        />
+        <button onClick={addTodo}>Ekle</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+      {/* Todo listesi */}
+      <ul className="todo-list">
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {todo.text}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
-export default App
+export default App;
