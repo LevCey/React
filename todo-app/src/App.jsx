@@ -1,91 +1,73 @@
-import { useState, useEffect } from 'react';
-import TodoInput from './components/TodoInput';
-import TodoList from './components/TodoList';
-import './App.css';
+import { useState, useEffect } from 'react'
+import './App.css'
+
+// Şimdilik TodoItem'i import edelim
+import TodoItem from './components/TodoItem'
 
 function App() {
-// Localstorage'dan todo verileri yükle (varsa)
   const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem('todos');
-    return savedTodos ? JSON.parse(savedTodos) : [];
-  });
+    const savedTodos = localStorage.getItem('todos')
+    return savedTodos ? JSON.parse(savedTodos) : []
+  })
+  
+  const [inputValue, setInputValue] = useState('')
 
-  const [inputValue, setInputValue] = useState('');
-
-  // Todos her değiştiğinde localStorage'a kaydet
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-    //console.log("Todos updated in localStorage:  uzunluğu ", todos.length);
-  }, [todos]);
+    localStorage.setItem('todos', JSON.stringify(todos))
+  }, [todos])
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  }
-
-   // Todo ekleme fonksiyonu
   const addTodo = () => {
     if (inputValue.trim() !== '') {
-      const newTodo = {
-        id: Date.now(), // Basit bir ID
+      setTodos([...todos, {
+        id: Date.now(),
         text: inputValue,
         completed: false
-      }
-      setTodos([...todos, newTodo]) // Mevcut listeye yeni todo ekle
-      setInputValue('') // Input'u temizle
+      }])
+      setInputValue('')
     }
   }
 
-  // Enter tuşuna basınca da eklensin
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      addTodo()
-    }
-  }
-
-  // Todo'yu tamamla/tamamlama
   const toggleTodo = (id) => {
-    setTodos(todos.map( todo => 
+    setTodos(todos.map(todo => 
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     ))
   }
 
-  // TOdo'yu sil
   const deleteTodo = (id) => {
-    setTodos(todos.filter( todo => todo.id !== id ))
+    setTodos(todos.filter(todo => todo.id !== id))
   }
 
-  // Tüm todoları temizle
-  const clearAllTodos = () => {
-    if(window.confirm("Tüm görevleri silmek istediğinize emin misiniz?")) {
-      setTodos([])
-    }
-  }
-
-  return ( 
+  return (
     <div className="app">
-      <h1>Yapılcaklar Listesi</h1>
+      <h1>Yapılacaklar Listem</h1>
+      
+      <div className="input-container">
+        <input 
+          type="text"
+          placeholder="Yeni görev ekle..."
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyUp={(e) => e.key === 'Enter' && addTodo()}
+        />
+        <button onClick={addTodo}>Ekle</button>
+      </div>
 
-      <TodoInput 
-        value={inputValue}
-        onChange={handleInputChange}
-        onAdd={addTodo}
-        onKeyPress={handleKeyPress}
-      />
+      <ul className="todo-list">
+        {todos.map((todo) => (
+          <TodoItem 
+            key={todo.id}
+            todo={todo}
+            onToggle={toggleTodo}
+            onDelete={deleteTodo}
+          />
+        ))}
+      </ul>
 
-      <TodoList 
-        todos={todos}
-        onToggle={toggleTodo}
-        onDelete={deleteTodo}
-      />
-
-      {todos.length > 0 && (
-        <div className="Stats">
-          <p>Toplam Görev: {todos.length} | Tamamlanan Görev: {todos.filter(todo => todo.completed).length}</p>
-          <button className="clear-btn" onClick={clearAllTodos}>Tümünü Temizle</button>
-        </div>
-      )}
-    </div>   
+      <div className="stats">
+        <p>Toplam: {todos.length} | Tamamlanan: {todos.filter(t => t.completed).length}</p>
+      </div>
+    </div>
   )
 }
 
-export default App;
+export default App

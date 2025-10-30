@@ -1,17 +1,20 @@
-function TodoItem({todo, onToggle, onDelete}){
+function TodoItem({ todo, onToggle, onDelete }) {
+  return (
     <li className={todo.completed ? 'completed' : ''}>
-        <input
-            type="checkbox"
-            checked={todo.completed}
-            onChange={()=> onToggle(todo.id)}
-        />
-        <span>{todo.text}</span>
-        <button 
-            className="delete-btn" 
-            onClick={() => onDelete(todo.id)}>
-            Sil
-        </button>
+      <input 
+        type="checkbox"
+        checked={todo.completed}
+        onChange={() => onToggle(todo.id)}
+      />
+      <span>{todo.text}</span>
+      <button 
+        className="delete-btn"
+        onClick={() => onDelete(todo.id)}
+      >
+        Sil
+      </button>
     </li>
+  )
 }
 
-export default TodoItem;
+export default TodoItem
