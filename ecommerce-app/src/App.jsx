@@ -14,12 +14,13 @@ function App() {
         <div className="app">
           <Navbar />
           <div className="container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-            </Routes>
+           <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/products/:id" element={<ProductDetail />} /> {/* Bu satırı ekleyin */}
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
           </div>
         </div>
       </Router>
