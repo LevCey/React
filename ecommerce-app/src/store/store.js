@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from './slices/cartSlice'
+import productsReducer from './slices/productsSlice'
 
-// LocalStorage'dan yükle
 const loadState = () => {
   try {
     const serializedState = localStorage.getItem('reduxCart')
@@ -14,7 +14,6 @@ const loadState = () => {
   }
 }
 
-// LocalStorage'a kaydet
 const saveState = (state) => {
   try {
     const serializedState = JSON.stringify(state)
@@ -24,18 +23,17 @@ const saveState = (state) => {
   }
 }
 
-// Preloaded state ile store oluştur
 const preloadedState = loadState()
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
+    products: productsReducer,  // Yeni reducer ekledik
   },
   preloadedState: preloadedState ? { cart: preloadedState } : undefined,
   devTools: true
 })
 
-// Her state değişiminde localStorage'a kaydet
 store.subscribe(() => {
   saveState(store.getState().cart)
 })

@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { products } from '../data/products'
+import { fetchProducts, selectAllProducts, selectProductsLoading, selectProductsError } from '../store/slices/productsSlice'
 import { addToCart, selectCartItems } from '../store/slices/cartSlice'
 import { Link } from 'react-router-dom'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 function Products() {
-  // Redux hooks
   const dispatch = useDispatch()
+  
+  // Redux state
+  const products = useSelector(selectAllProducts)
+  const loading = useSelector(selectProductsLoading)
+  const error = useSelector(selectProductsError)
   const cartItems = useSelector(selectCartItems)
   
   const [selectedCategory, setSelectedCategory] = useLocalStorage('selectedCategory', 'Tümü')
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Component mount olduğunda ürünleri yükle
+  useEffect(() => {
+    dispatch(fetchProducts())
+  }, [dispatch])
+
   const handleAddToCart = (product) => {
-    // Redux action dispatch et
     dispatch(addToCart(product))
     alert(`${product.name} sepete eklendi! 🎉`)
   }
@@ -30,6 +38,29 @@ function Products() {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesCategory && matchesSearch
   })
+
+  // Loading durumu
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Ürünler yükleniyor...</p>
+      </div>
+    )
+  }
+
+  // Error durumu
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>❌ Hata!</h2>
+        <p>{error}</p>
+        <button className="btn-primary" onClick={() => dispatch(fetchProducts())}>
+          Tekrar Dene
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="products-page">
@@ -91,4 +122,4 @@ function Products() {
   )
 }
 
-export default Products 
+export default Products
