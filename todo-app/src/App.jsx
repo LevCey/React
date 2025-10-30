@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import TodoInput from './components/TodoInput';
+import TodoList from './components/TodoList';
 import './App.css';
 
 function App() {
-
 // Localstorage'dan todo verileri yükle (varsa)
   const [todos, setTodos] = useState(() => {
     const savedTodos = localStorage.getItem('todos');
@@ -13,9 +14,9 @@ function App() {
 
   // Todos her değiştiğinde localStorage'a kaydet
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos))
+    localStorage.setItem('todos', JSON.stringify(todos));
+    //console.log("Todos updated in localStorage:  uzunluğu ", todos.length);
   }, [todos]);
-
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -62,42 +63,26 @@ function App() {
 
   return ( 
     <div className="app">
-      <h1>Yapılcaklar Listesi </h1>
+      <h1>Yapılcaklar Listesi</h1>
 
-      <div className='input-container'>
-        <input 
-          type= "text"
-          placeholder="Yeni görev ekle..."
-          value={inputValue}
-          onChange={handleInputChange}  
-          onKeyUp={handleKeyPress}
-        />
-        <button onClick={addTodo}>Ekle</button>
-      </div>
+      <TodoInput 
+        value={inputValue}
+        onChange={handleInputChange}
+        onAdd={addTodo}
+        onKeyPress={handleKeyPress}
+      />
 
-      {todos.length > 0 ? (
-      <>
-      <ul className="todo-list">
-        {todos.map((todo) => (
-          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={()=> toggleTodo(todo.id)}
-            />
-            <span>{todo.text}</span>
-            <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>Sil</button>
-          </li> 
-        ))}
-      </ul>
+      <TodoList 
+        todos={todos}
+        onToggle={toggleTodo}
+        onDelete={deleteTodo}
+      />
 
-      {/* istatistik */}
-      <div className='stats'>
-        <p>Toplam: {todos.length} | Tamamlanan: {todos.filter(todo => todo.completed).length}</p>
-        <button className="clear-btn" onClick={clearAllTodos}>Tümünü Temizle</button>
-      </div>
-      </> ): (
-        <p>Henüz eklenmiş görev yok.</p>
+      {todos.length > 0 && (
+        <div className="Stats">
+          <p>Toplam Görev: {todos.length} | Tamamlanan Görev: {todos.filter(todo => todo.completed).length}</p>
+          <button className="clear-btn" onClick={clearAllTodos}>Tümünü Temizle</button>
+        </div>
       )}
     </div>   
   )
