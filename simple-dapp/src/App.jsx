@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import TransferETH from './components/TransferETH'
+import MessageBoard from './components/MessageBoard'
 import './App.css'
 
 function App() {
@@ -149,6 +150,7 @@ function App() {
       getBalance(account)
     }
   }
+  
 
   return (
     <div className="app">
@@ -237,13 +239,16 @@ function App() {
           )}
         </div>
 
-        {/* Transfer komponenti - sadece bağlıysa ve doğru networkdeyse göster */}
+        {/* Transfer ve MessageBoard - sadece bağlıysa ve doğru networkdeyse göster */}
         {account && isCorrectNetwork && (
+        <>
           <TransferETH 
             account={account} 
             onSuccess={handleTransferSuccess}
           />
-        )}
+          <MessageBoard account={account} />
+        </>
+      )}    
       </div>
     </div>
   )

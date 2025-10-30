@@ -63,7 +63,7 @@ function TransferETH({ account, onSuccess }) {
           <input
             type="text"
             placeholder="0x..."
-            value={reciphandleTransferSuccessient}
+            value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             disabled={loading}
           />
