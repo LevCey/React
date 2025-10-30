@@ -1,11 +1,13 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { products } from '../data/products'
-import { useCart } from '../context/CartContext'
+import { addToCart, selectCartItems } from '../store/slices/cartSlice'
 
 function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { addToCart, cart } = useCart()
+  const dispatch = useDispatch()
+  const cartItems = useSelector(selectCartItems)
   
   const product = products.find(p => p.id === parseInt(id))
 
@@ -18,11 +20,10 @@ function ProductDetail() {
     )
   }
 
-  const isInCart = cart.some(item => item.id === product.id)
+  const isInCart = cartItems.some(item => item.id === product.id)
 
   const handleAddToCart = () => {
-    addToCart(product)
-    // Sepete ekledikten sonra sepet sayfasına yönlendir
+    dispatch(addToCart(product))
     navigate('/cart')
   }
 
@@ -68,7 +69,6 @@ function ProductDetail() {
         </div>
       </div>
 
-      {/* Benzer Ürünler */}
       <div className="related-products">
         <h2>Benzer Ürünler</h2>
         <div className="products-grid">

@@ -1,29 +1,30 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { products } from '../data/products'
-import { useCart } from '../context/CartContext'
+import { addToCart, selectCartItems } from '../store/slices/cartSlice'
 import { Link } from 'react-router-dom'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 function Products() {
-  const { addToCart, cart } = useCart()
+  // Redux hooks
+  const dispatch = useDispatch()
+  const cartItems = useSelector(selectCartItems)
   
-  // Custom hook kullanımı - seçilen kategori localStorage'da saklanır
   const [selectedCategory, setSelectedCategory] = useLocalStorage('selectedCategory', 'Tümü')
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleAddToCart = (product) => {
-    addToCart(product)
+    // Redux action dispatch et
+    dispatch(addToCart(product))
     alert(`${product.name} sepete eklendi! 🎉`)
   }
 
   const isInCart = (productId) => {
-    return cart.some(item => item.id === productId)
+    return cartItems.some(item => item.id === productId)
   }
 
-  // Kategorileri al
   const categories = ['Tümü', ...new Set(products.map(p => p.category))]
 
-  // Filtreleme
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'Tümü' || product.category === selectedCategory
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -34,7 +35,6 @@ function Products() {
     <div className="products-page">
       <h1>Ürünlerimiz</h1>
 
-      {/* Filtreler */}
       <div className="filters">
         <div className="search-box">
           <input 
@@ -59,12 +59,10 @@ function Products() {
         </div>
       </div>
 
-      {/* Sonuç sayısı */}
       <p className="results-count">
         {filteredProducts.length} ürün bulundu
       </p>
 
-      {/* Ürünler */}
       <div className="products-grid">
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
@@ -93,4 +91,4 @@ function Products() {
   )
 }
 
-export default Products
+export default Products 
