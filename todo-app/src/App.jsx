@@ -30,6 +30,18 @@ function App() {
     }
   }
 
+  // Todo'yu tamamla/tamamlama
+  const toggleTodo = (id) => {
+    setTodos(todos.map( todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ))
+  }
+
+  // TOdo'yu sil
+  const deleteTodo = (id) => {
+    setTodos(todos.filter( todo => todo.id !== id ))
+  }
+
   return ( 
     <div className="app">
       <h1>Yapılcaklar Listesi </h1>
@@ -48,11 +60,22 @@ function App() {
       {/* Todo listesi */}
       <ul className="todo-list">
         {todos.map((todo) => (
-          <li key={todo.id}>
-            {todo.text}
-          </li>
+          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={()=> toggleTodo(todo.id)}
+            />
+            <span>{todo.text}</span>
+            <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>Sil</button>
+          </li> 
         ))}
       </ul>
+
+      {/* istatistik */}
+      <div className='stats'>
+        <p>Toplam: {todos.length} | Tamamlanan: {todos.filter(todo => todo.completed).length}</p>
+      </div>
     </div>
   )
 }

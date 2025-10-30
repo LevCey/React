@@ -16,7 +16,7 @@ h1 {
   margin: 20px 0;
 }
 
-input {
+input[type="text"] {
   flex: 1;
   padding: 10px;
   font-size: 16px;
@@ -45,6 +45,9 @@ button:hover {
 }
 
 .todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 15px;
   margin-bottom: 10px;
   background-color: #f8f9fa;
@@ -52,4 +55,36 @@ button:hover {
   border-radius: 5px;
   color: #2c3e50; /* Yazı rengini ekledik */
   font-size: 16px;
+}
+
+.todo-list li span {
+  flex: 1;
+}
+
+.todo-list li.completed span {
+  text-decoration: line-through;
+  color: #95a5a6;
+}
+
+.todo-list li input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.stats {
+  text-align: center;
+  margin-top: 20px;
+  color: #7f8c8d;
+  font-size: 14px;
 }
