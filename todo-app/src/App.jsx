@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
 
+// Localstorage'dan todo verileri yükle (varsa)
+  const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem('todos');
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  });
+
   const [inputValue, setInputValue] = useState('');
-  const [todos, setTodos] = useState([]);
+
+  // Todos her değiştiğinde localStorage'a kaydet
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos))
+  }, [todos]);
+
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -42,6 +53,13 @@ function App() {
     setTodos(todos.filter( todo => todo.id !== id ))
   }
 
+  // Tüm todoları temizle
+  const clearAllTodos = () => {
+    if(window.confirm("Tüm görevleri silmek istediğinize emin misiniz?")) {
+      setTodos([])
+    }
+  }
+
   return ( 
     <div className="app">
       <h1>Yapılcaklar Listesi </h1>
@@ -57,7 +75,8 @@ function App() {
         <button onClick={addTodo}>Ekle</button>
       </div>
 
-      {/* Todo listesi */}
+      {todos.length > 0 ? (
+      <>
       <ul className="todo-list">
         {todos.map((todo) => (
           <li key={todo.id} className={todo.completed ? 'completed' : ''}>
@@ -75,8 +94,12 @@ function App() {
       {/* istatistik */}
       <div className='stats'>
         <p>Toplam: {todos.length} | Tamamlanan: {todos.filter(todo => todo.completed).length}</p>
+        <button className="clear-btn" onClick={clearAllTodos}>Tümünü Temizle</button>
       </div>
-    </div>
+      </> ): (
+        <p>Henüz eklenmiş görev yok.</p>
+      )}
+    </div>   
   )
 }
 
